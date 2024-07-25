@@ -21,5 +21,9 @@ def home(request: Request):
 @router.get("/words/{word}")
 def get_word(request: Request, word: str) -> Response:
     svg_path = typeset(word)
-    context = {"request": request, "svg_path": svg_path, "word": word}
+    context = {
+        "request": request,
+        "svg_path": svg_path,
+        "word": word,
+    }
     return templates.TemplateResponse("word.html", context)

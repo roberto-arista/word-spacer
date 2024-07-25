@@ -17,13 +17,13 @@ def default_feature_to_state() -> dict[str, bool]:
     return {"kern": True, "locl": True, "liga": True, "calt": True}
 
 
-Glyf = _TTGlyphSetVARC | _TTGlyphSetCFF | _TTGlyphSetGlyf
 UNITS_PER_EM_DEFAULT = 1000
+
+Glyf = _TTGlyphSetVARC | _TTGlyphSetCFF | _TTGlyphSetGlyf
 
 
 @dataclass
 class GlyphRecord:
-
     glyph: Glyf
     x_placement: int
     y_placement: int
@@ -32,7 +32,12 @@ class GlyphRecord:
 
 
 @dataclass
-class Shaper:
+class Typesetter:
+    """
+    Blends together the text shaping abilities of HarfBuzz
+    and the rendering on a SVG element using fontTools
+    and ufo2svg
+    """
 
     binary_path: Path
     feature_to_state: dict[str, bool] = field(default_factory=default_feature_to_state)
@@ -109,11 +114,9 @@ class Shaper:
         y_run_advance = 0
 
         for glyph_record in glyph_records:
-
             svgPen = SVGPathPen(self.glyph_set)
             glyph_record.glyph.draw(svgPen)  # type: ignore
 
-            # translate()
             paths.append(
                 f"""<path 
                     transform="
@@ -135,15 +138,15 @@ class Shaper:
 
 
 def typeset(word: str) -> str:
-    shaper = Shaper(FONT_PATH)
-    records = shaper.process(word)
-    return shaper.convert_to_svg(records)
+    shaper = Typesetter(FONT_PATH)
+    glyph_records = shaper.process(word)
+    return shaper.convert_to_svg(glyph_records)
 
 
 if __name__ == "__main__":
     from icecream import ic
 
-    shaper = Shaper(FONT_PATH)
-    records = shaper.process("ı́")
+    shaper = Typesetter(FONT_PATH)
+    records = shaper.process("hello")
     ic([i.glyph.name for i in records])  # type: ignore
     ic(records)
