@@ -1,0 +1,1 @@
+tailwindcss -i app/static/src/tw.css -o app/static/css/main.css --watch

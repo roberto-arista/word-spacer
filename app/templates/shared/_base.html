@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+        <title>Word Spacer</title>
+
+        <!-- CSS -->
+        <link rel="stylesheet" href="/static/css/main.css" type="text/css" />
+
+        {#
+        <!-- htmx -->
+        <script src="/static/js/htmx.min.js"></script>
+        #}
+    </head>
+
+    <body>
+        {% block header %} {% include "/shared/_header.html" %} {% endblock %}
+        {% block content %} {% endblock %}
+
+        {# hot reload script #}
+        {% if DEBUG %}
+            {{ hot_reload.script(url_for('hot-reload')) | safe }}
+        {% endif %} 
+
+    </body>
+
+</html>
